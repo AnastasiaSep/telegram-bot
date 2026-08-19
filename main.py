@@ -187,7 +187,6 @@ def single_choice_kb_with_back(options: List[str], prefix: str, lang: str) -> In
 def get_client():
     creds_json = os.getenv("SERVICE_ACCOUNT_JSON")
     if not creds_json:
-        # Fallback для локального развития
         return gspread.service_account(filename="service_account.json")
     try:
         creds_dict = json.loads(creds_json)
