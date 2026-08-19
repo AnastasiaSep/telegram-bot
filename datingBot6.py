@@ -1,3 +1,4 @@
+import json
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -180,8 +181,19 @@ def single_choice_kb_with_back(options: List[str], prefix: str, lang: str) -> In
 
 
 # ---------- Google Sheets ----------
+# def get_client():
+#     return gspread.service_account(filename="service_account.json")
+
 def get_client():
-    return gspread.service_account(filename="service_account.json")
+ creds_json = os.getenv("SERVICE_ACCOUNT_JSON")
+ if not creds_json:
+ # Fallback для локального развития
+ return gspread.service_account(filename="service_account.json")
+ try:
+ creds_dict = json.loads(creds_json)
+ return gspread.service_account_from_dict(creds_dict)
+ except json.JSONDecodeError:
+ raise ValueError("SERVICE_ACCOUNT_JSON is not valid JSON")
 
 
 def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
