@@ -1,0 +1,3 @@
+aiogram==3.x.x
+gspread==6.x.x
+python-dotenv==1.0.x
