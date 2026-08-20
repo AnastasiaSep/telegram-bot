@@ -40,7 +40,7 @@ COLUMNS = {
         "contact": "Ваш Telegram (например @username)",
         "languages": "Какими языками вы владеете?",
         "looking_for": "Что вы надеетесь найти на этом мероприятии?",
-        "timestamp": "Отметка времени",   
+        "timestamp": "Время",   
         "status": "Status",
         "user_id": "user_id",
         "tg_username": "tg_username",
