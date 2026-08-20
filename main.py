@@ -199,53 +199,59 @@ def get_client():
         raise ValueError("SERVICE_ACCOUNT_JSON is not valid JSON")
 
 def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
- client = get_client()
- sheet_id = SHEET_ID_RU if lang == "ru" else SHEET_ID_EN
- sheet = client.open_by_key(sheet_id).sheet1
- cols = COLUMNS[lang]
- headers = [h.strip() for h in sheet.row_values(1)]
- logging.info(f"HEADERS: {headers}")
- logging.info(f"COLS: {cols}")
+     logging.info("=== SAVE_TO_SHEET CALLED ===")
+     logging.info(f"lang={lang}, user_id={user_id}")
+     client = get_client()
+     sheet_id = SHEET_ID_RU if lang == "ru" else SHEET_ID_EN
+     logging.info(f"SHEET_ID: {sheet_id}")
  
- row = []
- for header in headers:
- if header == cols["name"]:
- row.append(data.get("name", ""))
- elif header == cols["age"]:
- row.append(data.get("age", ""))
- elif header == cols["gender"]:
- row.append(data.get("gender", ""))
- elif header == cols["contact"]:
- row.append(f"@{username}" if username else "")
- elif header == cols["languages"]:
- row.append(", ".join(data.get("languages", [])))
- elif header == cols["looking_for"]:
- row.append(data.get("looking_for", ""))
- elif header == cols.get("timestamp"):
- date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
- row.append(date_str)
- logging.info(f"✅ TIMESTAMP WRITTEN: {date_str}")
- elif header == cols["status"]:
- row.append("")
- elif header == cols["user_id"]:
- row.append(str(user_id))
- elif header == cols["tg_username"]:
- row.append(username or "")
- else:
- row.append("")
+     sheet = client.open_by_key(sheet_id).sheet1
+     cols = COLUMNS[lang]
+     logging.info(f"COLS: {cols}")
  
- all_values = sheet.get_all_values()
- next_row = len(all_values) + 1 if all_values else 1
- 
- logging.info(f"ROWS IN SHEET: {len(all_values)}")
- logging.info(f"NEXT ROW: {next_row}")
- logging.info(f"ROW DATA: {row}")
- 
- sheet.update(
- values=[row],
- range_name=f"A{next_row}",
- value_input_option="USER_ENTERED"
- )
+     headers = [h.strip() for h in sheet.row_values(1)]
+     logging.info(f"HEADERS: {headers}")
+    
+     
+     row = []
+     for header in headers:
+         if header == cols["name"]:
+             row.append(data.get("name", ""))
+         elif header == cols["age"]:
+             row.append(data.get("age", ""))
+         elif header == cols["gender"]:
+             row.append(data.get("gender", ""))
+         elif header == cols["contact"]:
+             row.append(f"@{username}" if username else "")
+         elif header == cols["languages"]:
+             row.append(", ".join(data.get("languages", [])))
+         elif header == cols["looking_for"]:
+             row.append(data.get("looking_for", ""))
+         elif header == cols.get("timestamp"):
+             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+             row.append(date_str)
+             logging.info(f"✅ TIMESTAMP WRITTEN: {date_str}")
+         elif header == cols["status"]:
+             row.append("")
+         elif header == cols["user_id"]:
+             row.append(str(user_id))
+         elif header == cols["tg_username"]:
+             row.append(username or "")
+         else:
+             row.append("")
+     
+     all_values = sheet.get_all_values()
+     next_row = len(all_values) + 1 if all_values else 1
+     
+     logging.info(f"ROWS IN SHEET: {len(all_values)}")
+     logging.info(f"NEXT ROW: {next_row}")
+     logging.info(f"ROW DATA: {row}")
+     
+     sheet.update(
+     values=[row],
+     range_name=f"A{next_row}",
+     value_input_option="USER_ENTERED"
+     )
 
 
 def get_all_participants() -> List[Dict]:
