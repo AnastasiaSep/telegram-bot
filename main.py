@@ -16,6 +16,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 load_dotenv()  # загружает переменные из .env
 
