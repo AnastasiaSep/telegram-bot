@@ -205,6 +205,7 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
  cols = COLUMNS[lang]
  headers = [h.strip() for h in sheet.row_values(1)]
  logging.info(f"HEADERS: {headers}")
+ logging.info(f"COLS: {cols}")
  
  row = []
  for header in headers:
@@ -220,26 +221,24 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
  row.append(", ".join(data.get("languages", [])))
  elif header == cols["looking_for"]:
  row.append(data.get("looking_for", ""))
+ elif header == cols.get("timestamp"):
+ date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+ row.append(date_str)
+ logging.info(f"✅ TIMESTAMP WRITTEN: {date_str}")
  elif header == cols["status"]:
  row.append("")
  elif header == cols["user_id"]:
  row.append(str(user_id))
  elif header == cols["tg_username"]:
  row.append(username or "")
- elif header == cols.get("timestamp") or "отметка" in header.lower() or "timestamp" in header.lower() or header.lower() == "время":
- # Напиши дату сразу в цикл
- date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
- row.append(date_str)
- logging.info(f"TIMESTAMP written: {header} = {date_str}")
  else:
  row.append("")
  
  all_values = sheet.get_all_values()
  next_row = len(all_values) + 1 if all_values else 1
+ 
  logging.info(f"ROWS IN SHEET: {len(all_values)}")
  logging.info(f"NEXT ROW: {next_row}")
- logging.info(f"USER ID: {user_id}")
- logging.info(f"NAME: {data.get('name')}")
  logging.info(f"ROW DATA: {row}")
  
  sheet.update(
