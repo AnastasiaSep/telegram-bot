@@ -221,7 +221,7 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
             row.append(", ".join(data.get("languages", [])))
         elif header == cols["looking_for"]:
             row.append(data.get("looking_for", ""))
-        elif header == cols["timestamp"]:
+        elif header == cols.get("timestamp") or "отметка" in header.lower() or "timestamp" in header.lower():
             row.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         elif header == cols["status"]:
             row.append("")
