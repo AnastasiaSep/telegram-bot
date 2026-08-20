@@ -205,40 +205,71 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
     cols = COLUMNS[lang]
 
     headers = sheet.row_values(1)
+logging.info(f"HEADERS FROM SHEET: {headers}")  # посмотри в логах Railway
 
-    row = []
+row = []
 
-    for header in headers:
-        if header == cols["name"]:
-            row.append(data.get("name", ""))
-        elif header == cols["age"]:
-            row.append(data.get("age", ""))
-        elif header == cols["gender"]:
-            row.append(data.get("gender", ""))
-        elif header == cols["contact"]:
-            row.append(f"@{username}" if username else "")
-        elif header == cols["languages"]:
-            row.append(", ".join(data.get("languages", [])))
-        elif header == cols["looking_for"]:
-            row.append(data.get("looking_for", ""))
-        elif header == cols.get("timestamp") or "отметка" in header.lower() or "timestamp" in header.lower():
-            row.append(datetime.now().strftime("%Y-%m-%d"))
-        elif header == cols["status"]:
-            row.append("")
-        elif header == cols["user_id"]:
-            row.append(str(user_id))
-        elif header == cols["tg_username"]:
-            row.append(username or "")
-        else:
-            row.append("")
+for header in headers:
+    h = header.strip()  # убираем пробелы
 
-    # Находим последнюю реально заполненную строку
-    all_values = sheet.get_all_values()
-
-    if not all_values:
-        next_row = 1
+    if h == cols["name"]:
+        row.append(data.get("name", ""))
+    elif h == cols["age"]:
+        row.append(data.get("age", ""))
+    elif h == cols["gender"]:
+        row.append(data.get("gender", ""))
+    elif h == cols["contact"]:
+        row.append(f"@{username}" if username else "")
+    elif h == cols["languages"]:
+        row.append(", ".join(data.get("languages", [])))
+    elif h == cols["looking_for"]:
+        row.append(data.get("looking_for", ""))
+    elif "отметка" in h.lower() or "timestamp" in h.lower() or h == cols.get("timestamp"):
+        row.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    elif h == cols["status"]:
+        row.append("")
+    elif h == cols["user_id"]:
+        row.append(str(user_id))
+    elif h == cols["tg_username"]:
+        row.append(username or "")
     else:
-        next_row = len(all_values) + 1
+        row.append("")
+
+    # headers = sheet.row_values(1)
+
+    # row = []
+
+    # for header in headers:
+    #     if header == cols["name"]:
+    #         row.append(data.get("name", ""))
+    #     elif header == cols["age"]:
+    #         row.append(data.get("age", ""))
+    #     elif header == cols["gender"]:
+    #         row.append(data.get("gender", ""))
+    #     elif header == cols["contact"]:
+    #         row.append(f"@{username}" if username else "")
+    #     elif header == cols["languages"]:
+    #         row.append(", ".join(data.get("languages", [])))
+    #     elif header == cols["looking_for"]:
+    #         row.append(data.get("looking_for", ""))
+    #     elif header == cols.get("timestamp") or "отметка" in header.lower() or "timestamp" in header.lower():
+    #         row.append(datetime.now().strftime("%Y-%m-%d"))
+    #     elif header == cols["status"]:
+    #         row.append("")
+    #     elif header == cols["user_id"]:
+    #         row.append(str(user_id))
+    #     elif header == cols["tg_username"]:
+    #         row.append(username or "")
+    #     else:
+    #         row.append("")
+
+    # # Находим последнюю реально заполненную строку
+    # all_values = sheet.get_all_values()
+
+    # if not all_values:
+    #     next_row = 1
+    # else:
+    #     next_row = len(all_values) + 1
 
     logging.info(f"ROWS IN SHEET: {len(all_values)}")
     logging.info(f"NEXT ROW: {next_row}")
