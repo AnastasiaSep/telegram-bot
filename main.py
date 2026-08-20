@@ -228,7 +228,7 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
          elif header == cols["looking_for"]:
              row.append(data.get("looking_for", ""))
          elif header == cols.get("timestamp"):
-             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+             date_str = datetime.now().strftime(""%d.%m.%Y" %H:%M:%S")
              row.append(date_str)
              logging.info(f"✅ TIMESTAMP WRITTEN: {date_str}")
          elif header == cols["status"]:
