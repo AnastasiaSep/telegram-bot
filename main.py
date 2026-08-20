@@ -15,6 +15,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
+from datetime import datetime
 
 load_dotenv()  # загружает переменные из .env
 
@@ -39,6 +40,7 @@ COLUMNS = {
         "contact": "Ваш Telegram (например @username)",
         "languages": "Какими языками вы владеете?",
         "looking_for": "Что вы надеетесь найти на этом мероприятии?",
+        "timestamp": "Отметка времени",   
         "status": "Status",
         "user_id": "user_id",
         "tg_username": "tg_username",
@@ -50,6 +52,7 @@ COLUMNS = {
         "contact": "Your Telegram/WhatsApp/Instagram",
         "languages": "What languages do you speak comfortably?",
         "looking_for": "What are you hoping to find at this event?",
+        "timestamp": "Timestamp",
         "status": "Status",
         "user_id": "user_id",
         "tg_username": "tg_username",
@@ -218,6 +221,8 @@ def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
             row.append(", ".join(data.get("languages", [])))
         elif header == cols["looking_for"]:
             row.append(data.get("looking_for", ""))
+        elif header == cols["timestamp"]:
+            row.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         elif header == cols["status"]:
             row.append("")
         elif header == cols["user_id"]:
