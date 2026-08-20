@@ -199,68 +199,54 @@ def get_client():
         raise ValueError("SERVICE_ACCOUNT_JSON is not valid JSON")
 
 def save_to_sheet(lang: str, data: dict, user_id: int, username: str):
-    client = get_client()
-    sheet_id = SHEET_ID_RU if lang == "ru" else SHEET_ID_EN
-    sheet = client.open_by_key(sheet_id).sheet1
-    cols = COLUMNS[lang]
-
-    headers = [h.strip() for h in sheet.row_values(1)]
-    logging.info(f"HEADERS: {headers}")
-
-    row = []
-    for header in headers:
-        if header == cols["name"]:
-            row.append(data.get("name", ""))
-        elif header == cols["age"]:
-            row.append(data.get("age", ""))
-        elif header == cols["gender"]:
-            row.append(data.get("gender", ""))
-        elif header == cols["contact"]:
-            row.append(f"@{username}" if username else "")
-        elif header == cols["languages"]:
-            row.append(", ".join(data.get("languages", [])))
-        elif header == cols["looking_for"]:
-            row.append(data.get("looking_for", ""))
-        elif header == cols["status"]:
-            row.append("")
-        elif header == cols["user_id"]:
-            row.append(str(user_id))
-        elif header == cols["tg_username"]:
-            row.append(username or "")
-        else:
-            row.append("")
-
-    # Дата в столбец Отметка времени / Timestamp / Время
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    for i, header in enumerate(headers):
-        h = header.lower()
-        if (
-            header == cols.get("timestamp")
-            or "отметка" in h
-            or "timestamp" in h
-            or h == "время"
-        ):
-            while len(row) <= i:
-                row.append("")
-            row[i] = date_str
-            logging.info(f"TIMESTAMP written at col {i}: {header} = {date_str}")
-            break
-
-    all_values = sheet.get_all_values()
-    next_row = len(all_values) + 1 if all_values else 1
-
-    logging.info(f"ROWS IN SHEET: {len(all_values)}")
-    logging.info(f"NEXT ROW: {next_row}")
-    logging.info(f"USER ID: {user_id}")
-    logging.info(f"NAME: {data.get('name')}")
-    logging.info(f"ROW DATA: {row}")
-
-    sheet.update(
-        values=[row],
-        range_name=f"A{next_row}",
-        value_input_option="USER_ENTERED"
-    )
-
+ client = get_client()
+ sheet_id = SHEET_ID_RU if lang == "ru" else SHEET_ID_EN
+ sheet = client.open_by_key(sheet_id).sheet1
+ cols = COLUMNS[lang]
+ headers = [h.strip() for h in sheet.row_values(1)]
+ logging.info(f"HEADERS: {headers}")
+ 
+ row = []
+ for header in headers:
+ if header == cols["name"]:
+ row.append(data.get("name", ""))
+ elif header == cols["age"]:
+ row.append(data.get("age", ""))
+ elif header == cols["gender"]:
+ row.append(data.get("gender", ""))
+ elif header == cols["contact"]:
+ row.append(f"@{username}" if username else "")
+ elif header == cols["languages"]:
+ row.append(", ".join(data.get("languages", [])))
+ elif header == cols["looking_for"]:
+ row.append(data.get("looking_for", ""))
+ elif header == cols["status"]:
+ row.append("")
+ elif header == cols["user_id"]:
+ row.append(str(user_id))
+ elif header == cols["tg_username"]:
+ row.append(username or "")
+ elif header == cols.get("timestamp") or "отметка" in header.lower() or "timestamp" in header.lower() or header.lower() == "время":
+ # Напиши дату сразу в цикл
+ date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+ row.append(date_str)
+ logging.info(f"TIMESTAMP written: {header} = {date_str}")
+ else:
+ row.append("")
+ 
+ all_values = sheet.get_all_values()
+ next_row = len(all_values) + 1 if all_values else 1
+ logging.info(f"ROWS IN SHEET: {len(all_values)}")
+ logging.info(f"NEXT ROW: {next_row}")
+ logging.info(f"USER ID: {user_id}")
+ logging.info(f"NAME: {data.get('name')}")
+ logging.info(f"ROW DATA: {row}")
+ 
+ sheet.update(
+ values=[row],
+ range_name=f"A{next_row}",
+ value_input_option="USER_ENTERED"
+ )
 
 
 def get_all_participants() -> List[Dict]:
